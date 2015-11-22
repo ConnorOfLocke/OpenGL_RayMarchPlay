@@ -204,6 +204,19 @@ void Gadgets::Draw(const glm::mat4& projection_view)
 	unsigned int view_proj_un = glGetUniformLocation(gadget_instance->flat_shader, "projection_view");
 	glUniformMatrix4fv(view_proj_un, 1, false, (float*)&projection_view);
 
+	if (gadget_instance->cur_tris > 0)
+	{
+		glBindVertexArray(gadget_instance->tri_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, gadget_instance->tri_VBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0,
+			sizeof(GadgetTri) * gadget_instance->cur_tris, (void*)gadget_instance->gadget_tris);
+
+		glDrawArrays(GL_TRIANGLES, 0, gadget_instance->cur_tris * 3);
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
 	if (gadget_instance->cur_lines > 0)
 	{
 		float prev_line_width;
@@ -224,36 +237,26 @@ void Gadgets::Draw(const glm::mat4& projection_view)
 
 	}
 
-	if (gadget_instance->cur_tris > 0)
-	{
-		glBindVertexArray(gadget_instance->tri_VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, gadget_instance->tri_VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0,
-			sizeof(GadgetTri) * gadget_instance->cur_tris, (void*)gadget_instance->gadget_tris);
-
-		glDrawArrays(GL_TRIANGLES, 0, gadget_instance->cur_tris * 3);
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
 	glDisable(GL_CULL_FACE);
 }
 
 void Gadgets::AddLine(const glm::vec4& from, const glm::vec4& to, const glm::vec4& from_colour, const glm::vec4& to_colour)
 {
-	gadget_instance->gadget_lines[gadget_instance->cur_lines++] = GadgetLine(GadgetVert(from, from_colour), GadgetVert(to, to_colour));
+	if (gadget_instance->cur_lines < gadget_instance->max_lines)
+		gadget_instance->gadget_lines[gadget_instance->cur_lines++] = GadgetLine(GadgetVert(from, from_colour), GadgetVert(to, to_colour));
 }
 
 void Gadgets::AddLine(const glm::vec4& from, const glm::vec4& to, const glm::vec4& colour)
 {
-	gadget_instance->gadget_lines[gadget_instance->cur_lines++] = GadgetLine(GadgetVert(from, colour), GadgetVert(to, colour));
+	if (gadget_instance->cur_lines < gadget_instance->max_lines)
+		gadget_instance->gadget_lines[gadget_instance->cur_lines++] = GadgetLine(GadgetVert(from, colour), GadgetVert(to, colour));
 }
 
 void Gadgets::AddTri(const glm::vec4& a_a, const glm::vec4& a_b, const glm::vec4& a_c,
 	const glm::vec4& a_colour, const glm::vec4& b_colour, const glm::vec4& c_colour)
 {
-	gadget_instance->gadget_tris[gadget_instance->cur_tris++] = GadgetTri(GadgetVert(a_a, a_colour), GadgetVert(a_b, b_colour), GadgetVert(a_c, c_colour));
+	if (gadget_instance->cur_tris < gadget_instance->max_tris)
+		gadget_instance->gadget_tris[gadget_instance->cur_tris++] = GadgetTri(GadgetVert(a_a, a_colour), GadgetVert(a_b, b_colour), GadgetVert(a_c, c_colour));
 }
 
 void Gadgets::AddTri(const glm::vec4& a_a, const glm::vec4& a_b, const glm::vec4& a_c)
@@ -263,7 +266,8 @@ void Gadgets::AddTri(const glm::vec4& a_a, const glm::vec4& a_b, const glm::vec4
 
 void Gadgets::AddTri(const glm::vec4& a_a, const glm::vec4& a_b, const glm::vec4& a_c, const glm::vec4& colour)
 {
-	gadget_instance->gadget_tris[gadget_instance->cur_tris++] = GadgetTri(GadgetVert(a_a, colour), GadgetVert(a_b, colour), GadgetVert(a_c, colour));
+	if (gadget_instance->cur_tris < gadget_instance->max_tris)
+		gadget_instance->gadget_tris[gadget_instance->cur_tris++] = GadgetTri(GadgetVert(a_a, colour), GadgetVert(a_b, colour), GadgetVert(a_c, colour));
 }
 
 void Gadgets::AddLineCube(const glm::vec4& center_pos, const glm::vec3& extents, const glm::mat4& transform, const glm::vec4& colour)
@@ -340,8 +344,106 @@ void Gadgets::AddCube(const glm::vec4& center_pos, const glm::vec3& extents, con
 	AddLineCube(center_pos, extents, transform, line_colour);
 }
 
+void Gadgets::AddLineSphere(const glm::vec4& center_pos, const float& radius, const int& rows, const int& columns, const glm::mat4& transform, const glm::vec4& colour)
+{
+	using namespace glm;
+
+	vec4 top_pos = center_pos + vec4(0, radius, 0, 0);
+	vec4 bottom_pos = center_pos - vec4(0, radius, 0, 0);
+
+	float pitch_angle = glm::pi<float>() / rows;
+	float yaw_angle = glm::pi<float>() * 2.0f / columns;
+
+	for (float cur_columns = 1; cur_columns <= columns; cur_columns++)
+	{
+		//hat 
+		mat4 last_yaw = glm::rotate(yaw_angle * (cur_columns - 1), vec3(0, 1, 0));
+		mat4 cur_yaw = glm::rotate(yaw_angle * (cur_columns), vec3(0, 1, 0));
+
+		mat4 pitch = glm::rotate(pitch_angle, vec3(1, 0, 0));
+
+		vec4 from_position = center_pos + (last_yaw * pitch * vec4(0, 1, 0, 0)) * radius;
+		AddLine(transform * top_pos, transform * from_position, colour);
+
+		//body
+		for (float cur_rows = 1; cur_rows < rows; cur_rows++)
+		{
+			mat4 last_pitch = glm::rotate(pitch_angle * (cur_rows - 1), vec3(1, 0, 0));
+			mat4 cur_pitch = glm::rotate(pitch_angle * (cur_rows), vec3(1, 0, 0));
+
+			vec4 top_left_position = center_pos + (last_yaw * last_pitch * vec4(0, 1, 0, 0) * radius);
+			vec4 top_right_position = center_pos + (last_yaw * cur_pitch * vec4(0, 1, 0, 0) * radius);
+
+			vec4 bottom_left_position = center_pos + (cur_yaw * last_pitch * vec4(0, 1, 0, 0) * radius);
+
+			AddLine(transform *top_left_position, transform *top_right_position, colour);
+			AddLine(transform *top_left_position, transform *bottom_left_position, colour);
+		}
+
+		//butt
+		pitch = glm::rotate(pitch_angle * (rows - 1), vec3(1, 0, 0));
+		from_position = center_pos + (last_yaw * pitch * vec4(0, 1, 0, 0) * radius);
+		
+		AddLine(transform * bottom_pos, transform * from_position, colour);
+	}
+}
+
+void Gadgets::AddFilledSphere(const glm::vec4& center_pos, const float& radius, const int& rows, const int& columns, const glm::mat4& transform, const glm::vec4& colour)
+{
+	using namespace glm;
+
+	vec4 top_pos = center_pos + vec4(0, radius, 0, 0);
+	vec4 bottom_pos = center_pos - vec4(0, radius, 0, 0);
+
+	float pitch_angle = glm::pi<float>() / rows;
+	float yaw_angle = glm::pi<float>() * 2.0f / columns;
+
+
+	for (float cur_columns = 1; cur_columns <= columns; cur_columns ++)
+	{
+		//hat 
+		mat4 last_yaw = glm::rotate(yaw_angle * (cur_columns - 1), vec3(0, 1, 0));
+		mat4 cur_yaw = glm::rotate(yaw_angle * (cur_columns), vec3(0, 1, 0));
+
+		mat4 pitch = glm::rotate(pitch_angle , vec3(1, 0, 0));
+
+		vec4 from_position = center_pos + (last_yaw * pitch * vec4(0, 1, 0, 0)) * radius;
+		vec4 to_position = center_pos + (cur_yaw * pitch * vec4(0, 1, 0, 0)) * radius;
+
+		AddTri(transform * top_pos, transform * from_position, transform * to_position, colour);
+
+		//body
+		for (float cur_rows = 2; cur_rows < rows; cur_rows++)
+		{
+			mat4 last_pitch = glm::rotate(pitch_angle * (cur_rows - 1), vec3(1, 0, 0));
+			mat4 cur_pitch = glm::rotate(pitch_angle * (cur_rows), vec3(1, 0, 0));
+
+			vec4 top_left_position = center_pos + (last_yaw * last_pitch * vec4(0, 1, 0, 0) * radius);
+			vec4 top_right_position = center_pos + (last_yaw * cur_pitch * vec4(0, 1, 0, 0) * radius);
+		
+			vec4 bottom_left_position = center_pos + (cur_yaw * last_pitch * vec4(0, 1, 0, 0) * radius);
+			vec4 bottom_right_position = center_pos + (cur_yaw * cur_pitch * vec4(0, 1, 0, 0) * radius);
+		
+			AddTri(transform * bottom_right_position, transform * bottom_left_position,		transform * top_left_position, colour);
+			AddTri(transform * top_right_position,	  transform * bottom_right_position,	transform * top_left_position, colour);
+		}
+
+		//butt
+		pitch = glm::rotate(pitch_angle * (rows - 1), vec3(1, 0, 0));
+		from_position = center_pos + (last_yaw * pitch * vec4(0, 1, 0, 0) * radius);
+		to_position = center_pos + (cur_yaw * pitch * vec4(0, 1, 0, 0) * radius);
+		
+		AddTri(transform * bottom_pos, transform * to_position, transform * from_position, colour);
+	}
+}
+
+void Gadgets::AddSphere(const glm::vec4& center_pos, const float& radius, const int& rows, const int& columns, const glm::mat4& transform, const glm::vec4& fill_colour, const glm::vec4& line_colour)
+{
+	AddFilledSphere(center_pos, radius, rows, columns, transform, fill_colour);
+	AddLineSphere(center_pos, radius, rows, columns, transform, line_colour);
+}
+
 void Gadgets::SetLineWidth(const float& a_line_width)
 {
 	gadget_instance->line_width = a_line_width;
 }
-

@@ -20,17 +20,23 @@ public:
 	static void Draw(const glm::mat4& projection_view);
 
 	static void AddLine(const glm::vec4& from, const glm::vec4& to, const glm::vec4& from_colour, const glm::vec4& to_colour);
+
 	static void AddLine(const glm::vec4& from, const glm::vec4& to, const glm::vec4& colour = vec4(1,1,1,1));
 
 	static void AddTri(	const glm::vec4& a_a, const glm::vec4& a_b, const glm::vec4& a_c,
 						const glm::vec4& a_colour, const glm::vec4& b_colour, const glm::vec4& c_colour);
+
 	static void AddTri(const glm::vec4& a_a, const glm::vec4& a_b, const glm::vec4& a_c, const glm::vec4& colour);
 	static void AddTri(const glm::vec4& a_a, const glm::vec4& a_b, const glm::vec4& a_c);
-
 
 	static void AddLineCube(const glm::vec4& center_pos, const glm::vec3& extents, const glm::mat4& transform = glm::mat4(), const glm::vec4& colour = glm::vec4(1,1,1,1));
 	static void AddFilledCube(const glm::vec4& center_pos, const glm::vec3& extents, const glm::mat4& transform = glm::mat4(), const glm::vec4& colour = glm::vec4(1, 1, 1, 1));
 	static void AddCube(const glm::vec4& center_pos, const glm::vec3& extents, const glm::mat4& transform = glm::mat4(), const glm::vec4& fill_colour = glm::vec4(1, 1, 1, 1), const glm::vec4& line_colour = glm::vec4(1, 1, 1, 1));
+
+	static void AddLineSphere(const glm::vec4& center_pos, const float& radius, const int& rows, const int& columns,  const glm::mat4& transform = glm::mat4(), const glm::vec4& colour = glm::vec4(1, 1, 1, 1));
+	static void AddFilledSphere(const glm::vec4& center_pos, const float& radius, const int& rows, const int& columns, const glm::mat4& transform = glm::mat4(), const glm::vec4& colour = glm::vec4(1, 1, 1, 1));
+	static void AddSphere(const glm::vec4& center_pos, const float& radius, const int& rows, const int& columns, const glm::mat4& transform = glm::mat4(), const glm::vec4& fill_colour = glm::vec4(1, 1, 1, 1), const glm::vec4& line_colour = glm::vec4(1, 1, 1, 1));
+
 
 	static void SetLineWidth(const float& a_line_width);
 

@@ -7,7 +7,7 @@ bool RayTrace_App::StartUp()
 		return false;
 
 	Gadgets::Initailise();
-	Gadgets::SetLineWidth(5.0f);
+	Gadgets::SetLineWidth(2.0f);
 	camera = new FlyCamera(glm::vec3(10, 10, 10), glm::vec3(0, 0, 0));
 	
 	return true;
@@ -24,6 +24,8 @@ bool RayTrace_App::Update()
 {
 	float delta_time = (float)glfwGetTime();
 	glfwSetTime(0);
+	time_since_start += delta_time;
+
 	Gadgets::Clear();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -37,11 +39,15 @@ bool RayTrace_App::Update()
 		Gadgets::AddLine(vec4(-10, 0, i, 1), vec4(10, 0, i, 1), vec4(0.8f, 0.8f, 0.8f, 1.0f));
 	}
 
+	mat4 tester = glm::translate(vec3(sinf(time_since_start), 0, cosf(time_since_start)));
+
 	Gadgets::AddLine(vec4(0, 0, 0, 1), vec4(10, 0, 0, 1), vec4(1, 0, 0, 1), vec4(1, 0, 0, 1));
 	Gadgets::AddLine(vec4(0, 0, 0, 1), vec4(0, 10, 0, 1), vec4(0, 1, 0, 1), vec4(0, 1, 0, 1));
 	Gadgets::AddLine(vec4(0, 0, 0, 1), vec4(0, 0, 10, 1), vec4(0, 0, 1, 1), vec4(0, 0, 1, 1));
 
-	Gadgets::AddCube(vec4(0,0, 20, 1), vec3(1,1,1), mat4(), vec4(1,0,0,1), vec4(1,1,1,1));
+	Gadgets::AddCube(vec4(0, 0, 20, 1), vec3(1, 1, 1), tester, vec4(1, 0, 0, 1), vec4(1, 1, 1, 1));
+
+	Gadgets::AddSphere(vec4(0, 0, -20, 1), 2.0f, 10, 10, tester, vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
 	return (Application::Update());
 }

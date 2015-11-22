@@ -13,7 +13,7 @@ public:
 	void Draw();
 private:
 
-	//stuffffffff and nonsense
+	float time_since_start = 0.0f;
 
 };
 
