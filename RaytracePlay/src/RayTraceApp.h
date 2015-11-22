@@ -13,7 +13,17 @@ public:
 	void Draw();
 private:
 
+	void CreateScreenQuad();
+
 	float time_since_start = 0.0f;
+	unsigned int ray_trace_shader;
+
+	unsigned int screen_quad_vao;
+	unsigned int screen_quad_vbo;
+
+
+
+	
 
 };
 

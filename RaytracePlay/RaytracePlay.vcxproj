@@ -26,6 +26,10 @@
     <ClInclude Include="src\gl_core_4_4.h" />
     <ClInclude Include="src\RayTraceApp.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ray_trace_frag.glsl" />
+    <None Include="ray_trace_vert.glsl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6A4BDEEB-8C20-4A12-BFDB-18FE788BAD77}</ProjectGuid>
     <RootNamespace>RaytracePlay</RootNamespace>

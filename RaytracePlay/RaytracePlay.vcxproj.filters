@@ -54,4 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ray_trace_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ray_trace_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
