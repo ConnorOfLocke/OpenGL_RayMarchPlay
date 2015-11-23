@@ -11,17 +11,17 @@ class Camera
 {
 public:		
 	Camera(vec3 position = vec3(0,0,-10), vec3 lookAt = vec3(0,0,0),
-		float fov = glm::quarter_pi<float>(), float aspectRatio = (16.0f / 9.0f), float a_near = 1.0f, float a_far = 100.0f);
+		float fov = 3.1415926f * 0.25f, float aspectRatio = (16.0f / 9.0f), float a_near = 1.0f, float a_far = 100.0f);
 	
 	virtual void Update(float dt) = 0;
-	void setPerspective(float fov, float aspectRatio, float a_near, float a_far);
-	void setLookAt(vec3 from, vec3 to, vec3 up);
-	void setPosition(vec3 position);
+	void SetPerspective(float fov, float aspectRatio, float a_near, float a_far);
+	void SetLookAt(vec3 from, vec3 to, vec3 up);
+	void SetPosition(vec3 position);
 
-	mat4 getWorldTransform();
-	mat4 getView();
-	mat4 getProjection();
-	mat4 getProjectionView();
+	mat4 GetWorld();
+	mat4 GetView();
+	mat4 GetProjection();
+	mat4 GetProjectionView();
 
 protected:
 	mat4 world;
@@ -38,7 +38,7 @@ class FlyCamera : public Camera
 public:
 	FlyCamera(	vec3 position = vec3(0, 10, -10),
 				vec3 lookAt = vec3(0, 0, 0),
-				float fov = glm::pi<float>() * 0.25f,
+				float fov = 3.1415926f * 0.25f,
 				float aspectRatio = (16.0f / 9.0f),
 				float a_near = 0.1f,
 				float a_far = 100.0f,
@@ -50,7 +50,6 @@ public:
 private:
 	float speed;
 	vec3 up;
-
 };
 
 #endif

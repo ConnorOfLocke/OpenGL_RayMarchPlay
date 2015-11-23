@@ -30,7 +30,7 @@ Camera::Camera(	vec3 position,
 /// <param name="aspectRatio">The aspect ratio.</param>
 /// <param name="a_near">The a_near.</param>
 /// <param name="a_far">The a_far.</param>
-void Camera::setPerspective(float fov, float aspectRatio, float a_near, float a_far)
+void Camera::SetPerspective(float fov, float aspectRatio, float a_near, float a_far)
 {
 	projection = glm::perspective(fov, aspectRatio, a_near, a_far);
 	projection_view = projection * view;
@@ -42,7 +42,7 @@ void Camera::setPerspective(float fov, float aspectRatio, float a_near, float a_
 /// <param name="from">From.</param>
 /// <param name="to">To.</param>
 /// <param name="up">Up.</param>
-void Camera::setLookAt(vec3 from, vec3 to, vec3 up)
+void Camera::SetLookAt(vec3 from, vec3 to, vec3 up)
 {
 	view = glm::lookAt(from, to, up);
 	world = glm::inverse(view);
@@ -54,7 +54,7 @@ void Camera::setLookAt(vec3 from, vec3 to, vec3 up)
 /// Sets the position of the camera in 3d space
 /// </summary>
 /// <param name="position">The position.</param>
-void Camera::setPosition(vec3 position)
+void Camera::SetPosition(vec3 position)
 {
 	world[3].x = position.x;
 	world[3].y = position.y;
@@ -67,7 +67,7 @@ void Camera::setPosition(vec3 position)
 /// Gets the inverse view transform
 /// </summary>
 /// <returns></returns>
-mat4 Camera::getWorldTransform()
+mat4 Camera::GetWorld()
 {
 	world = glm::inverse(view);
 	return world;
@@ -76,7 +76,7 @@ mat4 Camera::getWorldTransform()
 /// Gets the current view matrix.
 /// </summary>
 /// <returns></returns>
-mat4 Camera::getView()
+mat4 Camera::GetView()
 {
 	view = glm::inverse(world);
 	return view;
@@ -86,7 +86,7 @@ mat4 Camera::getView()
 /// Gets the current projection matrix.
 /// </summary>
 /// <returns></returns>
-mat4 Camera::getProjection()
+mat4 Camera::GetProjection()
 {
 	return projection;
 }
@@ -95,7 +95,7 @@ mat4 Camera::getProjection()
 /// Gets the current projection view matrix.
 /// </summary>
 /// <returns></returns>
-mat4 Camera::getProjectionView()
+mat4 Camera::GetProjectionView()
 {
 	projection_view = projection * view;
 	return projection_view;
