@@ -1,0 +1,3 @@
+http://enigma-dev.org/forums/index.php?topic=730.0;wap2
+
+https://github.com/benwad/Spong/blob/master/sounds.cpp
