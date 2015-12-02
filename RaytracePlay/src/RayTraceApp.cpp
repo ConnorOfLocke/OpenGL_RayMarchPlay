@@ -1,5 +1,6 @@
 #include "RayTraceApp.h"
 #include "Gadgets.h"
+#include "Audio.h"
 
 bool RayTrace_App::StartUp()
 {
@@ -13,12 +14,20 @@ bool RayTrace_App::StartUp()
 	CreateScreenQuad();
 	CreateScreenQuadShaders("ray_trace_vert.glsl", "ray_trace_frag.glsl");
 
+	Audio::Initailise();
+	Audio::AddAudioListener(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 1), vec3(0, 1, 0));
+	int source = Audio::AddAudioSource(1.0f, 1.0f, vec3(0, 0, 1), vec3(0, 0, 0), true);
+	int clip = Audio::AddAudioClip_wav("test.wav");
+
+	Audio::AttachAudioClipToAudioSource(source, clip);
+
 	return true;
 }
 
 void RayTrace_App::ShutDown()
 {
 	Gadgets::Destroy();
+	Audio::Destroy();
 
 	Application::ShutDown();
 }

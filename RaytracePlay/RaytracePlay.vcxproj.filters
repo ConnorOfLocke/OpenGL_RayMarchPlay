@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\OpenAL">
+      <UniqueIdentifier>{77dd1232-34cc-4297-b356-d9b87900a21b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -33,6 +36,9 @@
     <ClCompile Include="src\Gadgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -51,6 +57,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Gadgets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\OpenAL\include\al.h">
+      <Filter>Header Files\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\OpenAL\include\alc.h">
+      <Filter>Header Files\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\OpenAL\include\efx.h">
+      <Filter>Header Files\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\OpenAL\include\efx-creative.h">
+      <Filter>Header Files\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\OpenAL\include\EFX-Util.h">
+      <Filter>Header Files\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\OpenAL\include\xram.h">
+      <Filter>Header Files\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

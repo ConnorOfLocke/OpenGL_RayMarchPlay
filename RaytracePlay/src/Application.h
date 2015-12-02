@@ -7,6 +7,7 @@
 #include "GLMheader.h"
 #include "Camera.h"
 
+
 class Application
 {
 public:
@@ -21,7 +22,9 @@ public:
 protected:
 	Camera *camera;
 	GLFWwindow* window;
+
 };
 
 
 #endif
+
